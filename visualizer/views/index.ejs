@@ -1,0 +1,108 @@
+<html>
+  <head>
+    <title>HW2 visualization</title>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      var map;
+      
+      /* First, we define a function that creates a new Google Map and installs
+         it in the 'map' DIV (see the HTML part at the bottom). */
+      
+      var loadMap = function()
+      {
+        var myOptions = {
+          center: new google.maps.LatLng(39.952335, -75.163789),
+          zoom: 11,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map"), myOptions);
+        
+        $.get('/author', function(data) { $("#author").html(data) });
+      };
+
+      /* We then assign this function to the 'onload' property of the main window,
+         so that it will be called as soon as the browser has finished loading the page. */
+
+      window.onload = loadMap;
+
+      /* Finally, we need a function that downloads the geo data from the server (which is 
+         running visualizer.js and makes the data available under '/getGeoData') and 
+         puts a marker on the map for each line of the geo data */
+
+      function loadGeoData()
+      {
+        // Send a request for the geo data to the server, and provide a (nameless) callback 
+        // function that will be called when the geo data has been downloaded
+      
+	$.get('/getGeoData', function(data) {
+        
+          // When we reach this point, the geo data has been downloaded and is now available
+          // as 'data' (the argument of the callback). Now, split the data into lines...
+                  
+	  var array = data.split("\n");
+          
+          // ... and then iterate over the lines
+          
+          for (var i = 0; i < array.length; i ++) {
+          
+            // Each line needs to be parsed futher
+          
+            var thisLine = array[i].split(/\s+/);
+            var position = thisLine[0];
+            var url = thisLine[1];
+            var photo = thisLine[2];
+	    var positionLine = position.split(/[(,)]/);
+	    var latitude = positionLine[1];
+	    var longitude = positionLine[2];
+            
+            // Now we create a marker at the location that was specified in the line
+
+            var myLatlng = new google.maps.LatLng(latitude,longitude);
+            var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    title: url,
+                    content: "<a href = " + url + ">" + "</a>",
+            });
+            
+            marker.setMap(map);
+
+            // We also want to be able to show a little info window when someone
+            // clicks on the marker. The idea is that the window should show:
+            //    * A clickable (!), scaled-down version of the image at that 
+            //      location (150x150 pixels), and
+            //    * The text "DBpedia URL: xxx" below the image (where 'xxx' is
+            //      the actual DBpedia URL).
+            // The DBpedia URL is already available as 'url' at this point, and the 
+            // image URL is available as 'photo'. 
+            
+            var contentString = 'TODO: Replace this (in index.ejs) with your HTML code';
+
+            // Now we create the info window (which is initially hidden)...
+
+	    marker['infowindow'] = new google.maps.InfoWindow({
+		content: contentString
+	    });
+
+            // ... and we add a 'listener' function to the marker that will
+            // be called when someone clicks on it. The listener will then
+            // open the info window we just created.
+
+	    google.maps.event.addListener(marker, 'click', function() {
+		this['infowindow'].open(map, this);
+	    });
+          }
+	}, 'text');
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map" style="width:800px;height:500px;"></div>
+    <div class="modal-footer">
+      <button id="display" type="button" onclick="loadGeoData()" class="btn btn-primary">Show markers</button>
+      <button id="hide" type="button" class="btn btn-primary" onclick = "loadMap()">Hide markers</button>          
+    </div>
+    <div id="out"></div><p>
+    <span id="author">Loading...</span>
+  </body>
+</html>
