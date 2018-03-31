@@ -61,7 +61,11 @@ public class Geocode {
   public String toString() {
     return name + "\t(" + lat + "," + lon + ")";
   }
-	
+  
+  public String formatParenthesis(){
+    return "(" + lat + "," + lon + ")";
+  }
+  
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof Geocode))
