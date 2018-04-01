@@ -23,9 +23,8 @@ public class GeocodeMapper extends Mapper<LongWritable, Text, Text, GeocodeWrita
     cities.add(new Geocode("Philadelphia", 39.88, -75.25));
     cities.add(new Geocode("Houston", 29.97, -95.35));
     cities.add(new Geocode("Seattle", 47.45, -122.30));
-    cities.add(new Geocode("Guadalajara", 20.6597, -103.3496 ));
+    cities.add(new Geocode("Guadalajara", 20.6597, -103.3496));
     cities.add(new Geocode("Monterrey", 25.6866, 100.3161));
-    System.out.println("{SETUP} inicio mapper");
   }
 
   /* TODO: Your mapper code here */
@@ -35,9 +34,15 @@ public class GeocodeMapper extends Mapper<LongWritable, Text, Text, GeocodeWrita
       throws IOException, InterruptedException {
     String rawString = value.toString();
     Triple parsedTriple = ParseTriple.parseTriple(rawString);
-    String relationType = parsedTriple.get(2);
+    if (parsedTriple != null) {
+      String relationType = parsedTriple.get(1);
+      processTriple(context, parsedTriple, relationType);
+    }
+  }
 
-    if (relationType.equals("http://xmlns.com/foaf/0.1/depiction(en")) {
+  private void processTriple(Mapper<LongWritable, Text, Text, GeocodeWritable>.Context context,
+      Triple parsedTriple, String relationType) throws IOException, InterruptedException {
+    if (relationType.equals("http://xmlns.com/foaf/0.1/depiction")) {
       processImage(parsedTriple, context);
     } else if (relationType.equals("http://www.georss.org/georss/point")) {
       processGeocode(parsedTriple, context);
@@ -46,7 +51,7 @@ public class GeocodeMapper extends Mapper<LongWritable, Text, Text, GeocodeWrita
 
   private boolean checkDistanceToCities(Double latLong[]) {
     return cities.stream()
-        .anyMatch(city -> city.getHaversineDistance(latLong[0], latLong[1]) < 5.0);
+        .anyMatch(city -> city.getHaversineDistance(latLong[0], latLong[1]) < 5000);
   }
 
   private void processGeocode(Triple parsedTriple,
@@ -55,6 +60,7 @@ public class GeocodeMapper extends Mapper<LongWritable, Text, Text, GeocodeWrita
     Text article = new Text(parsedTriple.get(0));
     String rawCoordinates = parsedTriple.get(2);
     Double latLong[] = ParserCoordinates.parseCoordinates(rawCoordinates);
+
     if (checkDistanceToCities(latLong)) {
       Geocode geo = new Geocode("LatLong", latLong[0], latLong[1]);
       GeocodeWritable geocodeWritable = new GeocodeWritable(geo);
@@ -69,6 +75,7 @@ public class GeocodeMapper extends Mapper<LongWritable, Text, Text, GeocodeWrita
     String imageURL = parsedTriple.get(2);
     Geocode fakeGeo = new Geocode(imageURL, 0, 0);
     GeocodeWritable fakeGeocodeWritable = new GeocodeWritable(fakeGeo);
+
     context.write(article, fakeGeocodeWritable);
   }
 }

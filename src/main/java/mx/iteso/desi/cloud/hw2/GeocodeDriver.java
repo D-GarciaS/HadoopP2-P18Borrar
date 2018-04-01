@@ -25,7 +25,7 @@ public class GeocodeDriver {
     Job job = new Job(conf);
     job.setJarByClass(GeocodeDriver.class);
     job.setMapperClass(GeocodeMapper.class);
-    job.setCombinerClass(GeocodeReducer.class);
+    // job.setCombinerClass(GeocodeReducer.class);
     job.setReducerClass(GeocodeReducer.class);
     job.setMapOutputKeyClass(Text.class);
     job.setMapOutputValueClass(GeocodeWritable.class);
