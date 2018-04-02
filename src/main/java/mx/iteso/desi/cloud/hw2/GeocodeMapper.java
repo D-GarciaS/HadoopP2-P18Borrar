@@ -25,12 +25,13 @@ public class GeocodeMapper extends Mapper<LongWritable, Text, Text, GeocodeWrita
   @Override
   protected void setup(Mapper<LongWritable, Text, Text, GeocodeWritable>.Context context)
       throws IOException, InterruptedException {
-        cities = new ArrayList<>();
-        cities.add(new Geocode("Philadelphia", 39.88, -75.25));
-        cities.add(new Geocode("Houston", 29.97, -95.35));
-        cities.add(new Geocode("Seattle", 47.45, -122.30));
-        cities.add(new Geocode("Guadalajara", 20.6597, -103.3496));
-        cities.add(new Geocode("Monterrey", 25.6866, 100.3161));
+    URI[] cacheFiles = context.getCacheFiles();
+    if (cacheFiles != null) {
+      cities = Files.readAllLines(Paths.get(".", cacheFiles[0].toString())).stream()
+          .map(ParseTriple::parseTriple).map(t -> t.getObject())
+          .map(ParserCoordinates::parseCoordinates).map(t -> new Geocode("", t[0], t[1]))
+          .collect(Collectors.toList());
+    }
   }
 
   /* TODO: Your mapper code here */
