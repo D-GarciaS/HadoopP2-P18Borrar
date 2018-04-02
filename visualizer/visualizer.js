@@ -72,5 +72,5 @@ app.get('/author', function(req, res) {
 // and we print a little message to the console to remind the user that
 // now it is time to open the main page in the browser.
 
-app.listen(8080);
+app.listen(80);
 console.log("Server is running. Now open 'http://localhost:8080' in a browser.");
