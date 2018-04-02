@@ -9,7 +9,7 @@ var geoData;
 // in the file, which we then remember in the 'geoData' variable. Error 34
 // is 'file not found'.
 
-fs.readFile('./part-r-00000', 'utf8', function (err,data) {
+fs.readFile('./Result/part-r-00000', 'utf8', function (err,data) {
   if (err) {
     if (err.errno == 34) {
       console.log("Cannot find the file 'part-r-00000' - did you copy it from ");

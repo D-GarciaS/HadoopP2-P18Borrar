@@ -1,8 +1,14 @@
 package mx.iteso.desi.cloud.hw2;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -19,12 +25,12 @@ public class GeocodeMapper extends Mapper<LongWritable, Text, Text, GeocodeWrita
   @Override
   protected void setup(Mapper<LongWritable, Text, Text, GeocodeWritable>.Context context)
       throws IOException, InterruptedException {
-    cities = new ArrayList<>();
-    cities.add(new Geocode("Philadelphia", 39.88, -75.25));
-    cities.add(new Geocode("Houston", 29.97, -95.35));
-    cities.add(new Geocode("Seattle", 47.45, -122.30));
-    cities.add(new Geocode("Guadalajara", 20.6597, -103.3496));
-    cities.add(new Geocode("Monterrey", 25.6866, 100.3161));
+        cities = new ArrayList<>();
+        cities.add(new Geocode("Philadelphia", 39.88, -75.25));
+        cities.add(new Geocode("Houston", 29.97, -95.35));
+        cities.add(new Geocode("Seattle", 47.45, -122.30));
+        cities.add(new Geocode("Guadalajara", 20.6597, -103.3496));
+        cities.add(new Geocode("Monterrey", 25.6866, 100.3161));
   }
 
   /* TODO: Your mapper code here */

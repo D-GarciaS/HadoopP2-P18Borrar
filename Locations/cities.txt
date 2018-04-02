@@ -1,0 +1,5 @@
+<"Philadelphia"> <loc> "39.88 -75.25".
+<"Houston"> <loc> "29.97 -95.35".
+<"Seattle"> <loc> "47.45 -122.30".
+<"Guadalajara"> <loc> "20.6597 -103.3496".
+<"Monterrey"> <loc> "25.6866 -100.3161".

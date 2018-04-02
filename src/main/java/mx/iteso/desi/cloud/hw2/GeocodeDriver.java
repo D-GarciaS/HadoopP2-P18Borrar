@@ -31,7 +31,7 @@ public class GeocodeDriver {
     job.setMapOutputValueClass(GeocodeWritable.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputKeyClass(Text.class);
-    //job.addCacheArchive(new Path(args[0]+"/geo").toUri());
+    job.addCacheFile(new Path(args[2]).toUri());
 
     FileInputFormat.addInputPath(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));

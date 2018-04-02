@@ -1,7 +1,7 @@
 <html>
   <head>
     <title>HW2 visualization</title>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyDdfmz1egjUFqky-rv-RvQ76-7XWSDN8mo&sensor=true"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript">
       var map;
@@ -54,7 +54,9 @@
             var photo = thisLine[2];
 	    var positionLine = position.split(/[(,)]/);
 	    var latitude = positionLine[1];
-	    var longitude = positionLine[2];
+      var longitude = positionLine[2];
+      
+            console.log(thisLine);
             
             // Now we create a marker at the location that was specified in the line
 
@@ -76,7 +78,13 @@
             // The DBpedia URL is already available as 'url' at this point, and the 
             // image URL is available as 'photo'. 
             
-            var contentString = 'TODO: Replace this (in index.ejs) with your HTML code';
+            var contentString = '<div id="content">'
+              + '<div><a href="' + photo + '">'
+              + '<img style="width: 150;height:150;object-fit:cover;" '
+              + 'src="'+ photo +'">'
+              + '</img></a></div>'
+              + '<h3> DBpedia URL: ' + url + '</h3>'
+              + '</div>';
 
             // Now we create the info window (which is initially hidden)...
 
